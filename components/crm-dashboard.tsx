@@ -26,6 +26,7 @@ import {
   ArrowRight,
   CheckSquare,
 } from "lucide-react"
+import { ThemeToggle } from "@/components/ui/theme-toggle"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -961,6 +962,7 @@ export function CRMDashboard() {
                 <Button variant="outline" size="sm">
                   <Bell className="h-4 w-4" />
                 </Button>
+                <ThemeToggle />
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" className="relative h-8 w-8 rounded-full">
