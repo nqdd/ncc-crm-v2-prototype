@@ -63,6 +63,7 @@ import { ContactsView } from "@/components/contacts-view"
 import { CompaniesView } from "@/components/companies-view"
 import { SalesPipelineView } from "@/components/sales-pipeline-view"
 import { ProjectsView } from "@/components/projects-view"
+import { QuotesView } from "@/components/quotes-view"
 import { ProjectKanbanView } from "@/components/project-kanban-view"
 import { CalendarView } from "@/components/calendar-view"
 import { AdminSettingsView } from "@/components/admin-settings-view"
@@ -443,13 +444,22 @@ export function CRMDashboard() {
         )
       case "companies":
         return hasPermission("companies") ? (
-          <CompaniesView />
+          <CompaniesView 
+            onNavigateToSalesPipeline={() => setActiveView("sales pipeline")}
+            onNavigateToQuotes={() => setActiveView("quotes")}
+          />
         ) : (
           <div className="p-6 text-center text-muted-foreground">Access denied</div>
         )
       case "projects":
         return hasPermission("projects") ? (
           <ProjectsView />
+        ) : (
+          <div className="p-6 text-center text-muted-foreground">Access denied</div>
+        )
+      case "quotes":
+        return hasPermission("deals") ? (
+          <QuotesView />
         ) : (
           <div className="p-6 text-center text-muted-foreground">Access denied</div>
         )

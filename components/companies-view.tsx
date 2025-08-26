@@ -33,6 +33,7 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { Checkbox } from "@/components/ui/checkbox"
+import { CompanyDetailView } from "./company-detail-view"
 
 // Mock data for companies
 const mockCompanies = [
@@ -112,12 +113,18 @@ const mockCompanies = [
   },
 ]
 
-export function CompaniesView() {
+interface CompaniesViewProps {
+  onNavigateToSalesPipeline?: () => void;
+  onNavigateToQuotes?: () => void;
+}
+
+export function CompaniesView({ onNavigateToSalesPipeline, onNavigateToQuotes }: CompaniesViewProps) {
   const [companies, setCompanies] = useState(mockCompanies)
   const [searchTerm, setSearchTerm] = useState("")
   const [filterType, setFilterType] = useState("all")
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
   const [editingCompany, setEditingCompany] = useState<any>(null)
+  const [detailCompany, setDetailCompany] = useState<any>(null)
 
   const filteredCompanies = companies.filter((company) => {
     const matchesSearch =
@@ -142,6 +149,32 @@ export function CompaniesView() {
     setCompanies(companies.filter((c) => c.id !== companyId))
   }
 
+  const handleViewDetails = (company: any) => {
+    // Transform company data to match CompanyDetailView structure
+    const detailData = {
+      id: company.id,
+      name: company.name,
+      initials: company.name.split(' ').map((n: string) => n[0]).join('').toUpperCase(),
+      avatar: "",
+      color: "#8b5cf6",
+      salesOwner: company.owner,
+      adminUser: "Admin User",
+      contacts: company.contacts || [],
+      deals: [],
+      quotes: [],
+      companyInfo: {
+        size: company.size || "",
+        totalRevenue: company.totalValue ? `$${company.totalValue.toLocaleString()}` : "",
+        industry: company.industry || "",
+        businessType: company.type?.join(", ") || "",
+        country: company.address?.split(", ").pop() || "",
+        website: company.website || ""
+      },
+      notes: ""
+    };
+    setDetailCompany(detailData);
+  }
+
   const getTypeColor = (type: string) => {
     switch (type) {
       case "client":
@@ -153,6 +186,18 @@ export function CompaniesView() {
       default:
         return "outline"
     }
+  }
+
+  // Show detail view if a company is selected
+  if (detailCompany) {
+    return (
+      <CompanyDetailView 
+        company={detailCompany} 
+        onBack={() => setDetailCompany(null)}
+        onNavigateToSalesPipeline={onNavigateToSalesPipeline}
+        onNavigateToQuotes={onNavigateToQuotes}
+      />
+    );
   }
 
   return (
@@ -327,7 +372,7 @@ export function CompaniesView() {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleViewDetails(company)}>
                           <Eye className="h-4 w-4 mr-2" />
                           View Details
                         </DropdownMenuItem>
