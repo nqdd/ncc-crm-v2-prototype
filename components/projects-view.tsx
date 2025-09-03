@@ -35,6 +35,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Progress } from "@/components/ui/progress"
+import { ProjectDetailView } from "@/components/project-detail-view"
 
 // Mock data for projects
 const mockProjects = [
@@ -131,6 +132,7 @@ export function ProjectsView() {
   const [filterStatus, setFilterStatus] = useState("all")
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
   const [editingProject, setEditingProject] = useState<any>(null)
+  const [detailProject, setDetailProject] = useState<any>(null)
 
   const filteredProjects = projects.filter((project) => {
     const matchesSearch =
@@ -153,6 +155,25 @@ export function ProjectsView() {
 
   const handleDeleteProject = (projectId: number) => {
     setProjects(projects.filter((p) => p.id !== projectId))
+  }
+
+  const handleViewDetails = (project: any) => {
+    // Transform to the shape expected by ProjectDetailView
+    const summary = {
+      id: project.id,
+      title: project.title,
+      description: project.description,
+      status: project.status,
+      priority: project.priority,
+      owner: project.owner,
+      startDate: project.startDate,
+      endDate: project.endDate,
+      progress: project.progress,
+      budget: project.budget,
+      spent: project.spent,
+      client: project.client,
+    }
+    setDetailProject(summary)
   }
 
   const getStatusColor = (status: string) => {
@@ -202,6 +223,16 @@ export function ProjectsView() {
   const totalSpent = projects.reduce((sum, project) => sum + project.spent, 0)
   const activeProjects = projects.filter((p) => p.status === "in-progress").length
   const completedProjects = projects.filter((p) => p.status === "completed").length
+
+  // Show detail view if selected
+  if (detailProject) {
+    return (
+      <ProjectDetailView
+        project={detailProject}
+        onBack={() => setDetailProject(null)}
+      />
+    )
+  }
 
   return (
     <div className="space-y-6">
@@ -405,7 +436,7 @@ export function ProjectsView() {
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                          <DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleViewDetails(project)}>
                             <Eye className="h-4 w-4 mr-2" />
                             View Details
                           </DropdownMenuItem>

@@ -69,6 +69,7 @@ import { CalendarView } from "@/components/calendar-view"
 import { AdminSettingsView } from "@/components/admin-settings-view"
 import { AuditLogView } from "@/components/audit-log-view"
 import { UserRolesView } from "@/components/user-roles-view"
+import { DealsView } from "@/components/deals-view"
 
 const revenueDataDaily = [
   { period: "Mon", revenue: 8500 },
@@ -152,9 +153,11 @@ const upcomingTasks = [
   { id: 4, title: "Update CRM data", priority: "medium", dueDate: "Next week" },
 ]
 
+// Add Deals to menuItems
 const menuItems = [
   { title: "Dashboard", icon: Home, url: "/" },
   { title: "Projects", icon: Kanban, url: "/projects" },
+  { title: "Deals", icon: Target, url: "/deals" },
   { title: "Quotes", icon: FileText, url: "/quotes" },
   { title: "Contacts", icon: Contact, url: "/contacts" },
   { title: "Companies", icon: Building2, url: "/companies" },
@@ -499,6 +502,8 @@ export function CRMDashboard() {
         ) : (
           <div className="p-6 text-center text-muted-foreground">Access denied</div>
         )
+      case "deals":
+        return <DealsView />
       case "dashboard":
       default:
         return (
